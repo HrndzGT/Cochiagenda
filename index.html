@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La Cochiagenda</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #333;
+      color: #fff;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    nav {
+      background: #eee;
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    nav button {
+      padding: 0.5rem 1rem;
+    }
+
+    .seccion {
+      display: none;
+      padding: 1rem;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    .visible {
+      display: block;
+    }
+
+    ul {
+      padding-left: 1.25rem;
+    }
+
+    ul li {
+      margin-bottom: 0.5rem;
+    }
+
+    .entrada {
+      margin-bottom: 1rem;
+    }
+
+    .registro {
+      border-top: 1px solid #ccc;
+      padding-top: 1rem;
+      margin-top: 1rem;
+    }
+
+    .totales {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    #premioAviso {
+      font-weight: bold;
+      color: blue;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>La Cochiagenda</h1>
+  </header>
+  <nav>
+    <button onclick="mostrarSeccion('reglas')">Reglas y condiciones</button>
+    <button onclick="mostrarSeccion('puntos')">Sistema de puntos</button>
+    <button onclick="mostrarSeccion('actividades')">Actividades pendientes</button>
+  </nav>
+
+  <div id="reglas" class="seccion">
+    <h2>Reglas y condiciones</h2>
+    <p>
+      Este sistema busca promover la comunicación, el interés genuino y el fortalecimiento de la convivencia a través de un registro de actitudes cotidianas.
+    </p>
+    <p>
+      Los puntos se asignan según el impacto emocional que generan las acciones. No se trata solo de hacer cosas, sino del valor que tienen para la otra persona y lo que representan dentro de la relación.
+    </p>
+    <p>
+      Este juego tiene como propósito recuperar gestos y dinámicas del día a día que tal vez con el tiempo se fueron dejando de lado: desde saludarse con atención, compartir sin distracciones, hasta mantener una comunicación auténtica y empática.
+    </p>
+    <p>
+      El sistema premia actitudes que fomentan la cercanía, la escucha activa, y el interés real por el otro, al mismo tiempo que ayuda a reflexionar sobre conductas que podrían estar afectando la conexión emocional.
+    </p>
+    <p>
+      Se busca un compromiso activo por cumplir con las actividades que se registren, para que no se queden en el olvido o en buenas intenciones sin acción.
+    </p>
+    <h3>Ejemplos de acciones que pueden sumar puntos:</h3>
+    <ul>
+      <li>Mostrar interés genuino por cómo estuvo el día de la otra persona.</li>
+      <li>Tener gestos amables espontáneos.</li>
+      <li>Saludar o despedirse de manera afectuosa.</li>
+      <li>Iniciar una conversación con intención real de compartir.</li>
+      <li>Tomar la iniciativa de proponer una actividad.</li>
+    </ul>
+    <h3>Ejemplos de acciones que pueden restar puntos:</h3>
+    <ul>
+      <li>Desinterés o apatía en la convivencia.</li>
+      <li>No prestar atención estando juntos sin razón válida.</li>
+      <li>Dejar conversaciones sin respuesta sin avisar previamente.</li>
+      <li>Respuestas que no fomentan la conversación o muestran desinterés.</li>
+      <li>Proponer actividades y no cumplirlas sin justificación.</li>
+    </ul>
+  </div>
+
+  <div id="puntos" class="seccion">
+    <h2>Sistema de puntos</h2>
+    <div class="totales">
+      Total Ami: <span id="totalAmi">0</span> | Total Luis: <span id="totalLuis">0</span>
+    </div>
+    <div id="premioAviso"></div>
+    <div class="entrada">
+      <label>¿A quién se otorga?:</label>
+      <select id="destinatario">
+        <option value="Ami">Ami</option>
+        <option value="Luis">Luis</option>
+      </select>
+    </div>
+    <div class="entrada">
+      <label>Motivo:</label>
+      <input type="text" id="motivo" maxlength="100" style="width: 100%;">
+    </div>
+    <div class="entrada">
+      <label>Valor:</label>
+      <select id="valor">
+        <option value="1">+1</option>
+        <option value="3">+3</option>
+        <option value="5">+5</option>
+        <option value="-1">-1</option>
+        <option value="-3">-3</option>
+        <option value="-5">-5</option>
+      </select>
+    </div>
+    <button onclick="registrarPunto()">Registrar punto</button>
+    <button onclick="limpiarPuntos()">Limpiar registros</button>
+    <div class="registro">
+      <h3>Historial de puntos</h3>
+      <ul id="historialPuntos"></ul>
+    </div>
+  </div>
+
+  <div id="actividades" class="seccion">
+    <h2>Actividades pendientes</h2>
+    <div class="entrada">
+      <label>Responsable:</label>
+      <select id="responsable">
+        <option value="Ami">Ami</option>
+        <option value="Luis">Luis</option>
+      </select>
+    </div>
+    <div class="entrada">
+      <label>Actividad:</label>
+      <input type="text" id="actividad" style="width: 100%;">
+    </div>
+    <div class="entrada">
+      <label>Fecha de compromiso:</label>
+      <input type="date" id="fechaCompromiso">
+    </div>
+    <button onclick="registrarActividad()">Registrar actividad</button>
+    <button onclick="limpiarActividades()">Limpiar registros</button>
+    <div class="registro">
+      <h3>Historial de actividades</h3>
+      <ul id="historialActividades"></ul>
+    </div>
+  </div>
+
+  <script>
+    function mostrarSeccion(id) {
+      document.querySelectorAll('.seccion').forEach(seccion => {
+        seccion.classList.remove('visible');
+      });
+      const target = document.getElementById(id);
+      if (target) {
+        target.classList.add('visible');
+      }
+    }
+
+    const historialPuntos = [];
+
+    function registrarPunto() {
+      const quien = document.getElementById("destinatario").value;
+      const motivo = document.getElementById("motivo").value;
+      const valor = parseInt(document.getElementById("valor").value);
+      const fecha = new Date().toLocaleString();
+      historialPuntos.unshift({ quien, motivo, valor, fecha });
+      actualizarHistorialPuntos();
+      document.getElementById("motivo").value = "";
+    }
+
+    function actualizarHistorialPuntos() {
+      const lista = document.getElementById("historialPuntos");
+      lista.innerHTML = "";
+      let totalAmi = 0;
+      let totalLuis = 0;
+      historialPuntos.forEach(p => {
+        const li = document.createElement("li");
+        li.style.color = p.valor > 0 ? "green" : "red";
+        li.textContent = `${p.fecha} - ${p.quien} (${p.valor > 0 ? "+" : ""}${p.valor}): ${p.motivo}`;
+        lista.appendChild(li);
+        if (p.quien === "Ami") totalAmi += p.valor;
+        if (p.quien === "Luis") totalLuis += p.valor;
+      });
+      document.getElementById("totalAmi").textContent = totalAmi;
+      document.getElementById("totalLuis").textContent = totalLuis;
+      const premioAviso = document.getElementById("premioAviso");
+      if (totalAmi >= 30) {
+        premioAviso.textContent = "¡Ami ha alcanzado 30 puntos y puede elegir una actividad o premio!";
+      } else if (totalLuis >= 30) {
+        premioAviso.textContent = "¡Luis ha alcanzado 30 puntos y puede elegir una actividad o premio!";
+      } else {
+        premioAviso.textContent = "";
+      }
+    }
+
+    function limpiarPuntos() {
+      historialPuntos.length = 0;
+      actualizarHistorialPuntos();
+    }
+
+    const historialActividades = [];
+
+    function registrarActividad() {
+      const responsable = document.getElementById("responsable").value;
+      const actividad = document.getElementById("actividad").value;
+      const fecha = new Date().toLocaleString();
+      const fechaCompromiso = document.getElementById("fechaCompromiso").value;
+      historialActividades.unshift({ responsable, actividad, fecha, fechaCompromiso, completado: false });
+      actualizarHistorialActividades();
+      document.getElementById("actividad").value = "";
+      document.getElementById("fechaCompromiso").value = "";
+    }
+
+    function actualizarHistorialActividades() {
+      const lista = document.getElementById("historialActividades");
+      lista.innerHTML = "";
+      historialActividades.forEach((a, i) => {
+        const li = document.createElement("li");
+        li.textContent = `${a.fecha} - ${a.responsable}: ${a.actividad}${a.fechaCompromiso ? ` (Compromiso: ${a.fechaCompromiso})` : ""}`;
+        if (!a.completado) {
+          const btn = document.createElement("button");
+          btn.textContent = "Marcar como completada";
+          btn.onclick = () => {
+            historialActividades[i].completado = true;
+            actualizarHistorialActividades();
+          };
+          li.appendChild(document.createElement("br"));
+          li.appendChild(btn);
+        } else {
+          li.style.textDecoration = "line-through";
+        }
+        lista.appendChild(li);
+      });
+    }
+
+    function limpiarActividades() {
+      historialActividades.length = 0;
+      actualizarHistorialActividades();
+    }
+  </script>
+</body>
+</html>
