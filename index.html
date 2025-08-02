@@ -177,24 +177,98 @@
     </div>
   </div>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js"></script>
-
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBwEy5lKLfZFoEyvRACN_6mq8wWtkkb9N0",
-      authDomain: "hrndzgt.firebaseapp.com",
-      databaseURL: "https://hrndzgt-default-rtdb.firebaseio.com",
-      projectId: "hrndzgt",
-      storageBucket: "hrndzgt.appspot.com",
-      messagingSenderId: "752832767321",
-      appId: "1:752832767321:web:48a340bc5184771ea31848",
-      measurementId: "G-8G9NWTRJQR"
-    };
+    function mostrarSeccion(id) {
+      document.querySelectorAll('.seccion').forEach(seccion => {
+        seccion.classList.remove('visible');
+      });
+      const target = document.getElementById(id);
+      if (target) {
+        target.classList.add('visible');
+      }
+    }
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    const historialPuntos = [];
+
+    function registrarPunto() {
+      const quien = document.getElementById("destinatario").value;
+      const motivo = document.getElementById("motivo").value;
+      const valor = parseInt(document.getElementById("valor").value);
+      const fecha = new Date().toLocaleString();
+      historialPuntos.unshift({ quien, motivo, valor, fecha });
+      actualizarHistorialPuntos();
+      document.getElementById("motivo").value = "";
+    }
+
+    function actualizarHistorialPuntos() {
+      const lista = document.getElementById("historialPuntos");
+      lista.innerHTML = "";
+      let totalAmi = 0;
+      let totalLuis = 0;
+      historialPuntos.forEach(p => {
+        const li = document.createElement("li");
+        li.style.color = p.valor > 0 ? "green" : "red";
+        li.textContent = `${p.fecha} - ${p.quien} (${p.valor > 0 ? "+" : ""}${p.valor}): ${p.motivo}`;
+        lista.appendChild(li);
+        if (p.quien === "Ami") totalAmi += p.valor;
+        if (p.quien === "Luis") totalLuis += p.valor;
+      });
+      document.getElementById("totalAmi").textContent = totalAmi;
+      document.getElementById("totalLuis").textContent = totalLuis;
+      const premioAviso = document.getElementById("premioAviso");
+      if (totalAmi >= 30) {
+        premioAviso.textContent = "¡Ami ha alcanzado 30 puntos y puede elegir una actividad o premio!";
+      } else if (totalLuis >= 30) {
+        premioAviso.textContent = "¡Luis ha alcanzado 30 puntos y puede elegir una actividad o premio!";
+      } else {
+        premioAviso.textContent = "";
+      }
+    }
+
+    function limpiarPuntos() {
+      historialPuntos.length = 0;
+      actualizarHistorialPuntos();
+    }
+
+    const historialActividades = [];
+
+    function registrarActividad() {
+      const responsable = document.getElementById("responsable").value;
+      const actividad = document.getElementById("actividad").value;
+      const fecha = new Date().toLocaleString();
+      const fechaCompromiso = document.getElementById("fechaCompromiso").value;
+      historialActividades.unshift({ responsable, actividad, fecha, fechaCompromiso, completado: false });
+      actualizarHistorialActividades();
+      document.getElementById("actividad").value = "";
+      document.getElementById("fechaCompromiso").value = "";
+    }
+
+    function actualizarHistorialActividades() {
+      const lista = document.getElementById("historialActividades");
+      lista.innerHTML = "";
+      historialActividades.forEach((a, i) => {
+        const li = document.createElement("li");
+        li.textContent = `${a.fecha} - ${a.responsable}: ${a.actividad}${a.fechaCompromiso ? ` (Compromiso: ${a.fechaCompromiso})` : ""}`;
+        if (!a.completado) {
+          const btn = document.createElement("button");
+          btn.textContent = "Marcar como completada";
+          btn.onclick = () => {
+            historialActividades[i].completado = true;
+            actualizarHistorialActividades();
+          };
+          li.appendChild(document.createElement("br"));
+          li.appendChild(btn);
+        } else {
+          li.style.textDecoration = "line-through";
+        }
+        lista.appendChild(li);
+      });
+    }
+
+    function limpiarActividades() {
+      historialActividades.length = 0;
+      actualizarHistorialActividades();
+    }
   </script>
 </body>
 </html>
